@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "monitoring-adapter"
+version = "0.1.0"
+description = ""
+authors = ["Jochen Van de Velde <jochen.van.de.velde@student.ehb.be>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+aio-pika = "^6.6.0"
+python-decouple = "^3.3"
+xmlschema = "^1.1.2"
+elasticsearch-dsl = "^7.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
