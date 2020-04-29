@@ -1,12 +1,10 @@
 import asyncio
 import aio_pika
 
+
 from monitoring_adapter import (
     config,
-    # events,
-    # errors,
-    # heartbeats,
-    # xml,
+    xml,
     # common
 )
 
@@ -19,26 +17,10 @@ async def main(event_loop):
     async with queue.iterator() as queue_iter:
         async for message in queue_iter:
             async with message.process():
-                print(message.body)
+                model = xml.decode_message(message.body)
 
-                # try:
-                #     obj = xml.decode_message(message.body.decode())
-                # except xml.DecodeException:
-                #     message.reject()
-                #
-                # try:
-                #     if isinstance(obj, events.Event):
-                #         await events.process_event(obj)
-                #     elif isinstance(obj, heartbeats.Heartbeat):
-                #         await heartbeats.process_heartbeat(obj)
-                #     elif isinstance(obj, errors.Error):
-                #         await errors.process_error(obj)
-                # except common.ProcessingFailure:
-                #     message.reject()
-
-
-                # parse message using XSD
-                # call correct Python module for processing message (event, error or heartbeat)
+                if model:
+                    await model.persist
 
 
 if __name__ == '__main__':
