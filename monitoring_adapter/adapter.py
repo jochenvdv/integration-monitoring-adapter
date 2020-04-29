@@ -11,7 +11,7 @@ from monitoring_adapter import (
 async def main(event_loop):
     connection = await aio_pika.connect_robust(config.AMQP_URI, loop=event_loop)
     channel = await connection.channel()
-    queue = await channel.declare_queue(config.QUEUE_NAME, internal=True)
+    queue = await channel.get_queue(config.QUEUE_NAME)
 
     async with queue.iterator() as queue_iter:
         async for message in queue_iter:
