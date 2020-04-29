@@ -6,10 +6,10 @@ from monitoring_adapter.models import (
     Error,
 )
 
-EVENT_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/event.xsd', converter=xmlschema.BadgerFishConverter)
+#EVENT_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/event.xsd', converter=xmlschema.BadgerFishConverter)
 LOG_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/log.xsd', converter=xmlschema.BadgerFishConverter)
 ERROR_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/error.xsd', converter=xmlschema.BadgerFishConverter)
-HEARTBEAT_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/heartbeat.xsd', converter=xmlschema.BadgerFishConverter)
+#HEARTBEAT_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/heartbeat.xsd', converter=xmlschema.BadgerFishConverter)
 
 
 def decode_message(message):
