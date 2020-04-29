@@ -14,13 +14,13 @@ HEARTBEAT_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/heartbeat.
 
 def decode_message(message):
     try:
-        if '<heartbeat>' in message:
+        if HEARTBEAT_DECODER.is_valid(message):
             # skip heartbeats for now
             model = None
-        elif '<log>' in message:
+        elif LOG_DECODER.is_valid(message):
             decoded = LOG_DECODER.to_dict(message)
             model = LogMessage.from_xml(decoded)
-        elif '<error>' in message:
+        elif ERROR_DECODER.is_valid(message):
             decoded = ERROR_DECODER.to_dict(message)
             model = Error.from_xml(decoded)
         else:
