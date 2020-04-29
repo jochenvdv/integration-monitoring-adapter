@@ -5,7 +5,6 @@ import aio_pika
 from monitoring_adapter import (
     config,
     xml,
-    # common
 )
 
 

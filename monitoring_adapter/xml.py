@@ -14,17 +14,14 @@ ERROR_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/error.xsd', co
 
 def decode_message(message):
     try:
-        if HEARTBEAT_DECODER.is_valid(message):
-            # skip heartbeats for now
-            model = None
-        elif LOG_DECODER.is_valid(message):
+        if LOG_DECODER.is_valid(message):
             decoded = LOG_DECODER.to_dict(message)
             model = LogMessage.from_xml(decoded)
         elif ERROR_DECODER.is_valid(message):
             decoded = ERROR_DECODER.to_dict(message)
             model = Error.from_xml(decoded)
         else:
-            # skip events for now
+            # skip heartbeats & events for now
             model = None
     except XMLSchemaParseError:
         raise DecodeException
