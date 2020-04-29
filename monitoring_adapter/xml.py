@@ -13,6 +13,8 @@ ERROR_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/error.xsd', co
 
 
 def decode_message(message):
+    message = message.decode('utf-8')
+
     try:
         if LOG_DECODER.is_valid(message):
             decoded = LOG_DECODER.to_dict(message)
