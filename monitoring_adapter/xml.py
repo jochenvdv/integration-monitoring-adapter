@@ -24,7 +24,6 @@ def decode_message(message):
             model = Error.from_xml(decoded)
         elif HEARTBEAT_DECODER.is_valid(message):
             decoded = HEARTBEAT_DECODER.to_dict(message)
-            print(decoded)
             model = Heartbeat.from_xml(decoded)
         else:
             # skip heartbeats & events for now
