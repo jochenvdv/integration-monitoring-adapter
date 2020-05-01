@@ -3,7 +3,7 @@ from monitoring_adapter.xml import decode_message
 
 
 def test_log_decode():
-    message = b'<log><application_name>kassa</application_name><timestamp>2020-04-30T16:42:57+00:00</timestamp><message>test</message></log>'
+    message = '<log><application_name>kassa</application_name><timestamp>2020-04-30T16:42:57+00:00</timestamp><message>test</message></log>'
     log = decode_message(message)
     assert isinstance(log, LogMessage)
     assert log.source_application == 'kassa'
@@ -12,7 +12,7 @@ def test_log_decode():
 
 
 def test_error_decode():
-    message = b'<error><application_name>kassa</application_name><timestamp>2020-04-30T16:42:57+00:00</timestamp><message>test</message></error>'
+    message = '<error><application_name>kassa</application_name><timestamp>2020-04-30T16:42:57+00:00</timestamp><message>test</message></error>'
     error = decode_message(message)
     assert isinstance(error, Error)
     assert error.source_application == 'kassa'
@@ -21,7 +21,7 @@ def test_error_decode():
 
 
 def test_heartbeat_decode():
-    message = b'<heartbeat><application_name>kassa</application_name><timestamp>2020-04-30T16:42:57+00:00</timestamp></heartbeat>'
+    message = '<heartbeat><application_name>kassa</application_name><timestamp>2020-04-30T16:42:57+00:00</timestamp></heartbeat>'
     heartbeat = decode_message(message)
     assert isinstance(heartbeat, Heartbeat)
     assert heartbeat.source_application == 'kassa'
@@ -29,7 +29,7 @@ def test_heartbeat_decode():
 
 
 def test_event_adduser_decode():
-    message = b'<add_user><application_name>kassa</application_name><name>test</name><uuid>test</uuid><email>test</email><street>test</street><municipal>test</municipal><postalCode>test</postalCode><vat>test</vat></add_user>'
+    message = '<add_user><application_name>kassa</application_name><name>test</name><uuid>test</uuid><email>test</email><street>test</street><municipal>test</municipal><postalCode>test</postalCode><vat>test</vat></add_user>'
     event = decode_message(message)
     assert isinstance(event, Event)
     assert event.event_type == 'add_user'
@@ -37,7 +37,7 @@ def test_event_adduser_decode():
 
 
 def test_event_patchuser_decode():
-    message = b'<patch_user><application_name>kassa</application_name><name>test</name><uuid>test</uuid><email>test</email><street>test</street><municipal>test</municipal><postalCode>test</postalCode><vat>test</vat></patch_user>'
+    message = '<patch_user><application_name>kassa</application_name><name>test</name><uuid>test</uuid><email>test</email><street>test</street><municipal>test</municipal><postalCode>test</postalCode><vat>test</vat></patch_user>'
     event = decode_message(message)
     assert isinstance(event, Event)
     assert event.event_type == 'patch_user'
@@ -45,7 +45,7 @@ def test_event_patchuser_decode():
 
 
 def test_event_addinvoice_decode():
-    message = b'<add_invoice><application_name>kassa</application_name><uuid>test</uuid><paid>test</paid><invoice_date>test</invoice_date><order_line><name>test</name><quantity>test</quantity><price>test</price><discount>test</discount></order_line></add_invoice>'
+    message = '<add_invoice><application_name>kassa</application_name><uuid>test</uuid><paid>test</paid><invoice_date>test</invoice_date><order_line><name>test</name><quantity>test</quantity><price>test</price><discount>test</discount></order_line></add_invoice>'
     event = decode_message(message)
     assert isinstance(event, Event)
     assert event.event_type == 'add_invoice'
@@ -53,7 +53,7 @@ def test_event_addinvoice_decode():
 
 
 def test_event_updateinvoice_decode():
-    message = b'<update_invoice><application_name>kassa</application_name><invoice_id>test</invoice_id><name>test</name><description>test</description><quantity>test</quantity><price>test</price><paid>test</paid></update_invoice>'
+    message = '<update_invoice><application_name>kassa</application_name><invoice_id>test</invoice_id><name>test</name><description>test</description><quantity>test</quantity><price>test</price><paid>test</paid></update_invoice>'
     event = decode_message(message)
     assert isinstance(event, Event)
     assert event.event_type == 'update_invoice'

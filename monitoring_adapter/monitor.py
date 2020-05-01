@@ -6,7 +6,7 @@ from monitoring_adapter.models import StatusChange
 
 
 class Monitor:
-    OFFLINE_TRESHOLD_IN_SECONDS = 1
+    OFFLINE_TRESHOLD_IN_SECONDS = 2
 
     def __init__(self):
         self._status = {}
