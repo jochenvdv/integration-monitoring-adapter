@@ -15,6 +15,10 @@ async def persist_log(log):
     return await persist_document('logs', log.to_json())
 
 
+async def persist_status_change(status_change):
+    return await persist_document('status', status_change.to_json())
+
+
 async def persist_document(index, document):
     async with aiohttp.request(method='POST', url=f'{ELASTICSEARCH_URI}/{index}/_doc', json=document) as response:
         if response.status != 200:

@@ -2,7 +2,7 @@ from monitoring_adapter.elasticsearch import (
     persist_error,
     persist_event,
     persist_log,
-)
+    persist_status_change)
 
 
 class Event:
@@ -72,10 +72,6 @@ class Heartbeat:
         self.timestamp = timestamp
         self.source_application = source_application
 
-    async def persist(self):
-        # don't persist for now
-        pass
-
     @classmethod
     def from_xml(cls, data):
         source_application = data['heartbeat']['application_name']['$']
@@ -83,3 +79,17 @@ class Heartbeat:
 
         return cls(source_application, timestamp)
 
+
+class StatusChange:
+    def __init__(self, application_name, online):
+        self.application_name = application_name
+        self.online = online
+
+    async def persist(self):
+        await persist_status_change(self)
+
+    def to_json(self):
+        return {
+            'application_name': self.source_application,
+            'online': self.online,
+        }
