@@ -60,15 +60,15 @@ class LogMessage:
 
     @classmethod
     def from_xml(cls, data):
-        source_application = data['error']['application_name']['$']
-        timestamp = data['error']['timestamp']['$']
-        message = data['error']['message']['$']
+        source_application = data['log']['application_name']['$']
+        timestamp = data['log']['timestamp']['$']
+        message = data['log']['message']['$']
 
         return cls(message, source_application, timestamp)
 
 
 class Heartbeat:
-    def __init__(self, timestamp, source_application):
+    def __init__(self, source_application, timestamp):
         self.timestamp = timestamp
         self.source_application = source_application
 
@@ -76,6 +76,10 @@ class Heartbeat:
         # don't persist for now
         pass
 
-    @staticmethod
-    def from_xml(data):
-        pass
+    @classmethod
+    def from_xml(cls, data):
+        source_application = data['heartbeat']['application_name']['$']
+        timestamp = data['heartbeat']['timestamp']['$']
+
+        return cls(source_application, timestamp)
+
