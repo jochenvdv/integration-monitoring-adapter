@@ -20,39 +20,53 @@ async def main(event_loop, monitor):
             async with message.process():
                 try:
                     try:
-                        model = decode_message(message.body)
-
-                        if not isinstance(model, Heartbeat):
-                            await model.persist()
-                        else:
-                            status_change = monitor.process_heartbeat(model)
-
-                            if status_change:
-                                await status_change.persist()
+                        await process_message(message, monitor)
                     except DecodeException:
-                        error = Error(
-                            f'Failed to decoded message \'{message}\'',
-                            datetime.now().isoformat(),
-                            'monitoring',
-                        )
-
-                        await error.persist()
+                        await handle_decode_exception(message)
                     except PersistenceException:
-                        # not much we can do if writing error to ElasticSearch fails
-                        # swallow exception, and let message be acknowledged
-                        pass
+                        await handle_persistence_exception()
                     except Exception as e:
-                        error = Error(
-                            f'Unexpected error \'{e.message}\'',
-                            datetime.now().isoformat(),
-                            'monitoring',
-                        )
-
-                        await error.persist()
+                        await handle_unexpected_exception(e)
                 except PersistenceException:
-                    # not much we can do if writing error to ElasticSearch fails
-                    # swallow exception, and let message be acknowledged
-                    pass
+                    await handle_persistence_exception()
+
+
+async def process_message(message, monitor):
+    model = decode_message(message.body)
+
+    if not isinstance(model, Heartbeat):
+        await model.persist()
+    else:
+        status_change = monitor.process_heartbeat(model)
+
+        if status_change:
+            await status_change.persist()
+
+
+async def handle_decode_exception(message):
+    error = Error(
+        f'Failed to decoded message \'{message}\'',
+        datetime.now().isoformat(),
+        'monitoring',
+    )
+
+    await error.persist()
+
+
+async def handle_persistence_exception():
+    # not much we can do if writing error to ElasticSearch fails
+    # swallow exception, and let message be acknowledged
+    pass
+
+
+async def handle_unexpected_exception(e):
+    error = Error(
+        f'Unexpected error \'{e.message}\'',
+        datetime.now().isoformat(),
+        'monitoring',
+    )
+
+    await error.persist()
 
 
 async def periodic_monitor(monitor):
@@ -64,7 +78,13 @@ async def periodic_monitor(monitor):
 
 
 if __name__ == '__main__':
-    monitor = Monitor()
+    monitor_instance = Monitor()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.gather(main(loop, monitor), periodic_monitor(monitor)))
+
+    tasks = asyncio.gather(
+        main(loop, monitor_instance),
+        periodic_monitor(monitor_instance)
+    )
+
+    loop.run_until_complete(tasks)
     loop.close()
