@@ -3,7 +3,9 @@ import xmlschema
 from monitoring_adapter.models import (
     LogMessage,
     Error,
-    Heartbeat, Event)
+    Heartbeat,
+    Event
+)
 
 LOG_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/log.xsd', converter=xmlschema.BadgerFishConverter)
 ERROR_DECODER = xmlschema.XMLSchema('monitoring_adapter/resources/error.xsd', converter=xmlschema.BadgerFishConverter)
