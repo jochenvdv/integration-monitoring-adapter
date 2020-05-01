@@ -59,7 +59,7 @@ async def process_message(message, monitor):
         status_change = monitor.process_heartbeat(model)
 
         if status_change:
-            LOGGER.info(f'Persisting StatusChange to ElasticSearch: {status_change.application_name} -> {status_change.online}')
+            LOGGER.info(f'Persisting StatusChange to ElasticSearch: {status_change.application_name} -> online: {status_change.online}')
             await status_change.persist()
 
 
@@ -101,7 +101,7 @@ async def periodic_monitor(monitor):
         LOGGER.info(f'Evaluating application statuses')
 
         for status_change in monitor.evaluate_statuses():
-            LOGGER.info(f'Persisting StatusChange to ElasticSearch: {status_change.application_name} -> {status_change.online}')
+            LOGGER.info(f'Persisting StatusChange to ElasticSearch: {status_change.application_name} -> online: {status_change.online}')
 
             try:
                 await status_change.persist()
