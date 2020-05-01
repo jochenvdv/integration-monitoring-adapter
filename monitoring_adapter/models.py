@@ -7,15 +7,22 @@ from monitoring_adapter.elasticsearch import (
 
 class Event:
     def __init__(self, event_type, source_application):
-        self.event_type = event_type,
+        self.event_type = event_type
         self.source_application = source_application
 
     async def persist(self):
         await persist_event(self)
 
-    @staticmethod
-    def from_xml(data):
-        pass
+    def to_json(self):
+        return {
+            'event_type': self.event_type,
+            'application_name': self.source_application,
+        }
+
+    @classmethod
+    def from_xml(cls, data, event_type):
+        source_application = data[event_type]['application_name']['$']
+        return cls(event_type, source_application)
 
 
 class Error:
@@ -81,15 +88,17 @@ class Heartbeat:
 
 
 class StatusChange:
-    def __init__(self, application_name, online):
+    def __init__(self, application_name, online, timestamp):
         self.application_name = application_name
         self.online = online
+        self.timestamp = timestamp
 
     async def persist(self):
         await persist_status_change(self)
 
     def to_json(self):
         return {
-            'application_name': self.source_application,
+            'application_name': self.application_name,
             'online': self.online,
+            'timestamp': self.timestamp,
         }

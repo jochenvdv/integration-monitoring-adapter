@@ -18,10 +18,10 @@ class Monitor:
 
         if application not in self._status:
             self._status[application] = ApplicationStatus(last_heartbeat=parsed_timestamp, online=True)
-            status_change = StatusChange(application, online=True)
+            status_change = StatusChange(application, online=True, timestamp=datetime.now().isoformat())
         else:
             if not self._status[application].online:
-                status_change = StatusChange(application, online=True)
+                status_change = StatusChange(application, online=True, timestamp=datetime.now().isoformat())
                 self._status[application].online = True
 
             self._status[application].last_heartbeat = parsed_timestamp
@@ -35,7 +35,7 @@ class Monitor:
 
         for application, status in self._status.items():
             if status.online and status.last_heartbeat < oldest_allowed_heartbeat:
-                status_changes.append(StatusChange(application, online=False))
+                status_changes.append(StatusChange(application, online=False, timestamp=datetime.now().isoformat()))
                 status.online = False
 
         return status_changes
