@@ -28,8 +28,6 @@ def get_event_decoder(message):
 
 
 def decode_message(message):
-    message = message.decode('utf-8')
-
     if LOG_DECODER.is_valid(message):
         decoded = LOG_DECODER.to_dict(message)
         model = LogMessage.from_xml(decoded)
