@@ -2,3 +2,4 @@
 *.egg_info
 *.idea
 .pytest_cache/
+__pycache__

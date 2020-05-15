@@ -40,8 +40,8 @@ async def main(event_loop, monitor):
                         await handle_persistence_exception()
                     except Exception as e:
                         await handle_unexpected_exception(e)
-                except PersistenceException:
-                    await handle_persistence_exception()
+                except PersistenceException as e:
+                    await handle_persistence_exception(e)
 
 
 async def process_message(message, monitor):
@@ -75,11 +75,22 @@ async def handle_decode_exception(message):
     await error.persist()
 
 
-async def handle_persistence_exception():
-    # not much we can do if writing error to ElasticSearch fails
-    # swallow exception, and let message be acknowledged
-    LOGGER.critical('Failed to persist to ElasticSearch')
-    pass
+async def handle_persistence_exception(e):
+    LOGGER.error('Failed to persist to ElasticSearch', e.status, e.body)
+    LOGGER.info(f'Persisting Error to ElasticSearch')
+    error = Error(
+        f'Failed to persist to ElasticSearch, statusCode \'{e.status}\', body: \'{e.body}\'',
+        datetime.now().isoformat(),
+        'monitoring',
+    )
+
+    try:
+        # try persisting error
+        await error.persist()
+    except PersistenceException:
+        # not much we can do if writing error to ElasticSearch fails
+        # swallow exception, and let message be acknowledged
+        pass
 
 
 async def handle_unexpected_exception(e):
@@ -105,8 +116,8 @@ async def periodic_monitor(monitor):
 
             try:
                 await status_change.persist()
-            except PersistenceException:
-                await handle_persistence_exception()
+            except PersistenceException as e:
+                await handle_persistence_exception(e)
 
 if __name__ == '__main__':
     LOGGER.info('Monitoring adapter starting up')
