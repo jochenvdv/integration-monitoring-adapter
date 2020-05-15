@@ -21,7 +21,7 @@ async def persist_status_change(status_change):
 
 async def persist_document(index, document):
     async with aiohttp.request(method='POST', url=f'{ELASTICSEARCH_URI}/{index}/_doc', json=document) as response:
-        if response.status > 200:
+        if response.status >= 400:
             raise PersistenceException(status=response.status, body=await response.read())
 
 
