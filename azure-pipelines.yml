@@ -16,9 +16,7 @@ steps:
 - script: |
     cd /opt/monitoring-adapter
     sudo git fetch
-    sudo git checkout --force $COMMIT_HASH
-  env:
-    COMMIT_HASH: $(Build.SourceVerion)
+    sudo git checkout --force $BUILD_SOURCEVERSION
   displayName: 'Update code'
 - script: |
     cd /opt/monitoring-adapter
