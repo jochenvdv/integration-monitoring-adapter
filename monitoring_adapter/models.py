@@ -99,6 +99,6 @@ class StatusChange:
     def to_json(self):
         return {
             'application_name': self.application_name,
-            'online': self.online,
+            'status': 'online' if self.online else 'offline',
             'timestamp': self.timestamp,
         }

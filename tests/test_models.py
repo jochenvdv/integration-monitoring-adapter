@@ -35,7 +35,16 @@ def test_statuschange():
     timestamp = datetime.now().isoformat()
     statuschange = StatusChange(online=True, application_name='kassa', timestamp=timestamp)
     assert statuschange.to_json() == {
-        'online': True,
+        'status': 'online',
+        'application_name': 'kassa',
+        'timestamp': timestamp,
+    }
+
+def test_statuschange_offline():
+    timestamp = datetime.now().isoformat()
+    statuschange = StatusChange(online=False, application_name='kassa', timestamp=timestamp)
+    assert statuschange.to_json() == {
+        'status': 'offline',
         'application_name': 'kassa',
         'timestamp': timestamp,
     }
