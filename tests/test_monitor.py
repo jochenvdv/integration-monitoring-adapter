@@ -7,7 +7,7 @@ from monitoring_adapter.monitor import Monitor
 
 
 def now():
-    return UTC.localize(datetime.now()).isoformat()
+    return UTC.localize(datetime.utcnow()).isoformat()
 
 
 def test_monitor_process_heartbeat_returns_statuschange_on_first_heartbeat():

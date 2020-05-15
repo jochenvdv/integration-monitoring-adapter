@@ -1,8 +1,11 @@
 from datetime import timedelta, datetime
-from pytz import UTC
+from pytz import UTC, timezone
 import dateutil.parser
 
 from monitoring_adapter.models import StatusChange
+
+
+TZ = timezone('Europe/Brussels')
 
 
 class Monitor:
@@ -30,7 +33,7 @@ class Monitor:
 
     def evaluate_statuses(self):
         status_changes = []
-        now = datetime.now()
+        now = datetime.utcnow()
         oldest_allowed_heartbeat = now - timedelta(seconds=self.OFFLINE_TRESHOLD_IN_SECONDS)
 
         for application, status in self._status.items():
@@ -42,7 +45,9 @@ class Monitor:
                 overdue = last_heartbeat < UTC.localize(oldest_allowed_heartbeat)
 
             if status.online and overdue:
-                status_changes.append(StatusChange(application, online=False, timestamp=datetime.now().isoformat()))
+                status_changes.append(
+                    StatusChange(application, online=False, timestamp=UTC.localize(datetime.utcnow()).isoformat())
+                )
                 status.online = False
 
         return status_changes

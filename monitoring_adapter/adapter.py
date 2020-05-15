@@ -67,7 +67,7 @@ async def handle_decode_exception(message):
     LOGGER.warning('Failed to decode message')
     error = Error(
         f'Failed to decoded message \'{message}\'',
-        datetime.now().isoformat(),
+        datetime.utcnow().isoformat(),
         'monitoring',
     )
 
@@ -76,11 +76,11 @@ async def handle_decode_exception(message):
 
 
 async def handle_persistence_exception(e):
-    LOGGER.error('Failed to persist to ElasticSearch', e.status, e.body)
-    LOGGER.info(f'Persisting Error to ElasticSearch')
+    LOGGER.error(f'Failed to persist to ElasticSearch, statusCode \'{e.status}\', body: \'{e.body}\'')
+    LOGGER.info('Persisting Error to ElasticSearch')
     error = Error(
         f'Failed to persist to ElasticSearch, statusCode \'{e.status}\', body: \'{e.body}\'',
-        datetime.now().isoformat(),
+        datetime.utcnow().isoformat(),
         'monitoring',
     )
 
@@ -97,7 +97,7 @@ async def handle_unexpected_exception(e):
     LOGGER.error('Encountered unexpected exception')
     error = Error(
         f'Unexpected error \'{e.message}\'',
-        datetime.now().isoformat(),
+        datetime.utcnow().isoformat(),
         'monitoring',
     )
 
