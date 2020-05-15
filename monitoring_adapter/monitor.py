@@ -31,10 +31,17 @@ class Monitor:
     def evaluate_statuses(self):
         status_changes = []
         now = datetime.now()
-        oldest_allowed_heartbeat = UTC.localize(now - timedelta(seconds=self.OFFLINE_TRESHOLD_IN_SECONDS))
+        oldest_allowed_heartbeat = now - timedelta(seconds=self.OFFLINE_TRESHOLD_IN_SECONDS)
 
         for application, status in self._status.items():
-            if status.online and status.last_heartbeat < oldest_allowed_heartbeat:
+            last_heartbeat = status.last_heartbeat
+
+            if last_heartbeat.tzinfo is None or last_heartbeat.tzinfo.utcoffset(last_heartbeat) is None:
+                overdue = last_heartbeat < oldest_allowed_heartbeat
+            else:
+                overdue = last_heartbeat < UTC.localize(oldest_allowed_heartbeat)
+
+            if status.online and overdue:
                 status_changes.append(StatusChange(application, online=False, timestamp=datetime.now().isoformat()))
                 status.online = False
 

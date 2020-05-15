@@ -90,3 +90,15 @@ def test_monitor_process_heart_returns_statuschange_if_application_comes_back_on
     assert isinstance(status_change, StatusChange)
     assert status_change.application_name == 'kassa'
     assert status_change.online
+
+
+def test_monitor_evaluate_statuses_accepts_non_localized_heartbeat():
+    monitor = Monitor()
+
+    heartbeat = Heartbeat(source_application='kassa', timestamp=datetime.now().isoformat())
+    monitor.process_heartbeat(heartbeat)
+
+    status_changes = monitor.evaluate_statuses()
+    assert type(status_changes) is list
+    assert len(status_changes) == 0
+
