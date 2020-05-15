@@ -36,8 +36,8 @@ async def main(event_loop, monitor):
                         await process_message(message, monitor)
                     except DecodeException:
                         await handle_decode_exception(message)
-                    except PersistenceException:
-                        await handle_persistence_exception()
+                    except PersistenceException as e:
+                        await handle_persistence_exception(e)
                     except Exception as e:
                         await handle_unexpected_exception(e)
                 except PersistenceException as e:
