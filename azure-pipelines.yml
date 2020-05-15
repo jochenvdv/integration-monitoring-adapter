@@ -10,6 +10,10 @@ pool: default
 
 steps:
 - script: |
+    poetry install
+    poetry run py.test
+  displayName: 'Running tests'
+- script: |
     cd /opt/monitoring-adapter
     sudo git fetch
     sudo git rebase origin/master
