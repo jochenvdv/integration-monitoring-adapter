@@ -16,7 +16,7 @@ steps:
 - script: |
     cd /opt/monitoring-adapter
     sudo git fetch
-    sudo git rebase origin/master
+    sudo git checkout --force $(Build.SourceVerion)
   displayName: 'Update code'
 - script: |
     cd /opt/monitoring-adapter
