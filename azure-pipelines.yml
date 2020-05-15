@@ -11,6 +11,7 @@ pool: default
 steps:
 - script: |
     pwd
+    whoami
     touch /opt/monitoring-adapter/test.txt
   displayName: 'Install Python dependencies'
 
