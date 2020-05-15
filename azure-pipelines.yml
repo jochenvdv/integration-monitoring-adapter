@@ -11,14 +11,10 @@ pool: default
 steps:
 - script: |
     cd /opt/monitoring-adapter
+    pwd
     sudo git fetch
     sudo git rebase origin master
   displayName: 'Update code'
-- script: |
-    cd /opt/monitoring-adapter
-    sudo git fetch
-    sudo git rebase origin master
-    displayName: 'Install dependencies'
 - script: |
     cd /opt/monitoring-adapter
     sudo systemctl restart monitoring-adapter.service
