@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-
+from pytz import UTC
 import dateutil.parser
 
 from monitoring_adapter.models import StatusChange
@@ -31,7 +31,7 @@ class Monitor:
     def evaluate_statuses(self):
         status_changes = []
         now = datetime.now()
-        oldest_allowed_heartbeat = now - timedelta(seconds=self.OFFLINE_TRESHOLD_IN_SECONDS)
+        oldest_allowed_heartbeat = UTC.localize(now - timedelta(seconds=self.OFFLINE_TRESHOLD_IN_SECONDS))
 
         for application, status in self._status.items():
             if status.online and status.last_heartbeat < oldest_allowed_heartbeat:
