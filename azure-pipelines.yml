@@ -10,14 +10,16 @@ pool: default
 
 steps:
 - script: |
-    pwd
-    whoami
-    touch /opt/monitoring-adapter/test.txt
-  displayName: 'Install Python dependencies'
-
-- checkout: self
-  persistCredentials: true
-
-
-
-
+    cd /opt/monitoring-adapter
+    sudo git fetch
+    sudo git rebase origin master
+  displayName: 'Update code'
+- script: |
+    cd /opt/monitoring-adapter
+    sudo git fetch
+    sudo git rebase origin master
+    displayName: 'Install dependencies'
+- script: |
+    cd /opt/monitoring-adapter
+    sudo systemctl restart monitoring-adapter.service
+  displayName: 'Restart application'
