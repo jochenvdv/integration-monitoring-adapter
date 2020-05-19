@@ -1,9 +1,12 @@
 from datetime import datetime
 from time import sleep
 from pytz import UTC
-
+from logging import getLogger
 from monitoring_adapter.models import Heartbeat, StatusChange
 from monitoring_adapter.monitor import Monitor
+
+
+LOGGER = getLogger('test_monitor')
 
 
 def now():
@@ -11,7 +14,7 @@ def now():
 
 
 def test_monitor_process_heartbeat_returns_statuschange_on_first_heartbeat():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat = Heartbeat(source_application='kassa', timestamp=now())
     status_change = monitor.process_heartbeat(heartbeat)
@@ -21,7 +24,7 @@ def test_monitor_process_heartbeat_returns_statuschange_on_first_heartbeat():
 
 
 def test_monitor_process_heartbeat_returns_no_statuschange_on_second_heartbeat_in_time():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat1 = Heartbeat(source_application='kassa', timestamp=now())
     monitor.process_heartbeat(heartbeat1)
@@ -34,7 +37,7 @@ def test_monitor_process_heartbeat_returns_no_statuschange_on_second_heartbeat_i
 
 
 def test_monitor_evaluate_statuses_returns_no_statuschange_if_heartbeat_not_overdue():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat = Heartbeat(source_application='kassa', timestamp=now())
     monitor.process_heartbeat(heartbeat)
@@ -45,7 +48,7 @@ def test_monitor_evaluate_statuses_returns_no_statuschange_if_heartbeat_not_over
 
 
 def test_monitor_evaluate_statuses_returns_statuschange_if_heartbeat_overdue():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat = Heartbeat(source_application='kassa', timestamp=now())
     monitor.process_heartbeat(heartbeat)
@@ -61,7 +64,7 @@ def test_monitor_evaluate_statuses_returns_statuschange_if_heartbeat_overdue():
 
 
 def test_monitor_evaluate_statuses_returns_statuschange_if_heartbeat_overdue_but_was_already_offline():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat = Heartbeat(source_application='kassa', timestamp=now())
     monitor.process_heartbeat(heartbeat)
@@ -76,7 +79,7 @@ def test_monitor_evaluate_statuses_returns_statuschange_if_heartbeat_overdue_but
 
 
 def test_monitor_process_heart_returns_statuschange_if_application_comes_back_online():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat1 = Heartbeat(source_application='kassa', timestamp=now())
     monitor.process_heartbeat(heartbeat1)
@@ -93,7 +96,7 @@ def test_monitor_process_heart_returns_statuschange_if_application_comes_back_on
 
 
 def test_monitor_evaluate_statuses_accepts_non_localized_heartbeat():
-    monitor = Monitor()
+    monitor = Monitor(LOGGER)
 
     heartbeat = Heartbeat(source_application='kassa', timestamp=datetime.now().isoformat())
     monitor.process_heartbeat(heartbeat)

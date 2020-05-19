@@ -121,7 +121,7 @@ async def periodic_monitor(monitor):
 
 if __name__ == '__main__':
     LOGGER.info('Monitoring adapter starting up')
-    monitor_instance = Monitor()
+    monitor_instance = Monitor(LOGGER)
     loop = asyncio.get_event_loop()
 
     tasks = asyncio.gather(
