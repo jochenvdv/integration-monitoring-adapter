@@ -21,10 +21,10 @@ class Monitor:
 
         if application not in self._status:
             self._status[application] = ApplicationStatus(last_heartbeat=parsed_timestamp, online=True)
-            status_change = StatusChange(application, online=True, timestamp=datetime.now().isoformat())
+            status_change = StatusChange(application, online=True, timestamp=datetime.utcnow().isoformat())
         else:
             if not self._status[application].online:
-                status_change = StatusChange(application, online=True, timestamp=datetime.now().isoformat())
+                status_change = StatusChange(application, online=True, timestamp=datetime.utcnow().isoformat())
                 self._status[application].online = True
 
             self._status[application].last_heartbeat = parsed_timestamp
