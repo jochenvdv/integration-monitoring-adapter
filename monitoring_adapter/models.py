@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from monitoring_adapter.elasticsearch import (
     persist_error,
     persist_event,
@@ -82,8 +84,8 @@ class Heartbeat:
     @classmethod
     def from_xml(cls, data):
         source_application = data['heartbeat']['application_name']['$']
-        timestamp = data['heartbeat']['timestamp']['$']
-
+        #timestamp = data['heartbeat']['timestamp']['$']
+        timestamp = datetime.utcnow().isoformat()
         return cls(source_application, timestamp)
 
 

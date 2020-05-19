@@ -44,7 +44,7 @@ class Monitor:
         for application, status in self._status.items():
             last_heartbeat = status.last_heartbeat
             self.logger.debug('Evaluating status for ' + application)
-            self.logger.debug(f'{application} is {status.online} and last heartbeat was {status.last_heartbeat}')
+            self.logger.debug(f'{application} is online: {status.online} and last heartbeat was {status.last_heartbeat}')
 
             if last_heartbeat.tzinfo is None or last_heartbeat.tzinfo.utcoffset(last_heartbeat) is None:
                 self.logger.debug('Using timezone-naïve timestamp comparison')
