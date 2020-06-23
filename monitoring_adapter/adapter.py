@@ -23,26 +23,36 @@ async def main(event_loop, monitor):
     LOGGER.info('Connecting to RabbitMQ')
 
     connection = await aio_pika.connect_robust(config.AMQP_URI, loop=event_loop)
-    connection.add_close_callback(handle_connection_close)
-    channel = await connection.channel()
-    queue = await channel.get_queue(config.QUEUE_NAME)
+    connection.add_reconnect_callback(handle_reconnected)
 
     LOGGER.info('Succesfully connected to RabbitMQ')
 
-    async with queue.iterator() as queue_iter:
-        async for message in queue_iter:
-            async with message.process():
-                try:
+    while True:
+        await consume(connection, monitor)
+
+
+async def consume(connection, monitor):
+    async with connection.channel() as channel:
+        queue = await channel.get_queue(config.QUEUE_NAME)
+
+        LOGGER.info('RabbitMQ channel opened')
+
+        async with queue.iterator() as queue_iter:
+            async for message in queue_iter:
+                async with message.process():
                     try:
-                        await process_message(message, monitor)
-                    except DecodeException:
-                        await handle_decode_exception(message)
+                        try:
+                            await process_message(message, monitor)
+                        except DecodeException:
+                            await handle_decode_exception(message)
+                        except PersistenceException as e:
+                            await handle_persistence_exception(e)
+                        except Exception as e:
+                            await handle_unexpected_exception(e)
                     except PersistenceException as e:
                         await handle_persistence_exception(e)
-                    except Exception as e:
-                        await handle_unexpected_exception(e)
-                except PersistenceException as e:
-                    await handle_persistence_exception(e)
+
+    LOGGER.info('RabbitMQ channel closed')
 
 
 async def process_message(message, monitor):
@@ -107,9 +117,8 @@ async def handle_unexpected_exception(e):
     await error.persist()
 
 
-async def handle_connection_close(e):
-    LOGGER.error('RabbitMQ connection closed')
-    LOGGER.error(e)
+async def handle_reconnected():
+    LOGGER.error('Re-connected to RabbitMQ')
 
 
 async def periodic_monitor(monitor):
