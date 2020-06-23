@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     tasks = asyncio.gather(
         main(loop, monitor_instance),
-        periodic_monitor(monitor_instance)
+        #periodic_monitor(monitor_instance)
     )
 
     loop.run_until_complete(tasks)
