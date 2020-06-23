@@ -23,6 +23,7 @@ async def main(event_loop, monitor):
     LOGGER.info('Connecting to RabbitMQ')
 
     connection = await aio_pika.connect_robust(config.AMQP_URI, loop=event_loop)
+    connection.add_close_callback(handle_connection_close)
     channel = await connection.channel()
     queue = await channel.get_queue(config.QUEUE_NAME)
 
@@ -95,6 +96,7 @@ async def handle_persistence_exception(e):
 
 async def handle_unexpected_exception(e):
     LOGGER.error('Encountered unexpected exception')
+    LOGGER.error(e)
     error = Error(
         f'Unexpected error \'{e.message}\'',
         datetime.utcnow().isoformat(),
@@ -103,6 +105,11 @@ async def handle_unexpected_exception(e):
 
     LOGGER.info(f'Persisting Error to ElasticSearch')
     await error.persist()
+
+
+async def handle_connection_close(e):
+    LOGGER.error('RabbitMQ connection closed')
+    LOGGER.error(e)
 
 
 async def periodic_monitor(monitor):
@@ -126,7 +133,7 @@ if __name__ == '__main__':
 
     tasks = asyncio.gather(
         main(loop, monitor_instance),
-        #periodic_monitor(monitor_instance)
+        periodic_monitor(monitor_instance)
     )
 
     loop.run_until_complete(tasks)
