@@ -62,7 +62,7 @@ class LogMessage:
 
     def to_json(self):
         return {
-            'message': self.message,
+            'message': 'Log: ' + self.message,
             'timestamp': self.timestamp,
             'application_name': self.source_application,
         }

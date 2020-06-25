@@ -15,7 +15,7 @@ def test_log():
     timestamp = datetime.now().isoformat()
     log = LogMessage(message='test', source_application='kassa', timestamp=timestamp)
     assert log.to_json() == {
-        'message': 'test',
+        'message': 'Log: test',
         'application_name': 'kassa',
         'timestamp': timestamp,
     }
